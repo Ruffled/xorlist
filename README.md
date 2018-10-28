@@ -24,7 +24,9 @@ I have to think about that one a little more.
 Anyway, here it is. Feel free to poke around.
 
 Copyright 2018 Douglas Fraser
+
 Creative Commons
+
 Feel free to use it as you wish, I make no claims other than I authored this ugly chunk of code.
 
 If you find it interesting or extend it in some way, I would love to hear about it.
