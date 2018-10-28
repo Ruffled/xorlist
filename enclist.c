@@ -153,6 +153,7 @@ t_list_item * insert_data_item(t_lxr_info * p_lxri, t_list_item *pli, int d1, in
     while(d1 > pli->data1 && pli != NULL && p_lxri->right != NULL) {
             pli = lxr_move_right(p_lxri, pli);
     }
+    pli = lxr_move_left(p_lxri, pli);
     print_at(p_lxri, pli);
     pcur = pli;
     pli = append_item(p_lxri, pcur, d1, d2);
