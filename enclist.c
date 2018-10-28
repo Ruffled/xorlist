@@ -46,6 +46,17 @@ void print_at(t_lxr_info * p_lxri, t_list_item * pli)
         }
 }
 
+t_list_item * extract_address(t_list_item *lxr, t_list_item *other)
+{
+    return (t_list_item*)(lxr->lxr ^ (unsigned long)other);
+
+}
+
+void shift_lxr(t_list_item *lxr, t_list_item *known, t_list_item *update)
+{
+    lxr->lxr = (lxr->lxr ^ (unsigned long)known) ^ (unsigned long)update;
+}
+
 t_list_item * lxr_move_right(t_lxr_info * p_lxri, t_list_item *pli)
 {
     t_list_item *pcur = pli;
@@ -55,7 +66,7 @@ t_list_item * lxr_move_right(t_lxr_info * p_lxri, t_list_item *pli)
     }
     pli = p_lxri->right;
     p_lxri->left = pcur;
-    p_lxri->right = (t_list_item*)(pli->lxr ^ (unsigned long)pcur);
+    p_lxri->right = extract_address(pli, pcur);
     return pli;
 }
 
@@ -68,7 +79,7 @@ t_list_item * lxr_move_left(t_lxr_info * p_lxri, t_list_item *pli)
     }
     pli = p_lxri->left;
     p_lxri->right = pcur;
-    p_lxri->left = (t_list_item*)(pli->lxr ^ (unsigned long)pcur);
+    p_lxri->left = extract_address(pli, pcur);
     return pli;
 }
 
@@ -83,7 +94,7 @@ void list_walk(void)
     lxri.right=NULL;
     pcur = lh;
     lxri.left = NULL;
-    lxri.right = (t_list_item*)(pcur->lxr ^ (unsigned long)lxri.left);
+    lxri.right = extract_address(pcur, lxri.left);
     while (pcur != NULL) {
         print_at(&lxri, pcur);
         pcur = lxr_move_right(&lxri, pcur);
@@ -102,17 +113,17 @@ void list_stumble(void)
     lxri.right=NULL;
     pcur = lh;
     lxri.left = NULL;
-    lxri.right = (t_list_item*)(pcur->lxr ^ (unsigned long)lxri.left);
+    lxri.right = extract_address(pcur, lxri.left);
     print_at(&lxri, pcur);
     while (pcur != NULL) {
         for(i = 0; i < 5 && pcur != NULL; i++) {
             pcur = lxr_move_right(&lxri, pcur);
         }
-        print_at(&lxri, pcur);
+        if(pcur != NULL) { print_at(&lxri, pcur); }
         for(i = 0; i < 3 && pcur != NULL; i++) {
             pcur = lxr_move_left(&lxri, pcur);
         }
-        print_at(&lxri, pcur);
+        if(pcur != NULL) { print_at(&lxri, pcur); }
     }
 }
 
@@ -132,10 +143,10 @@ t_list_item * append_item(t_lxr_info * p_lxri, t_list_item *p_current, int d1, i
         printf(": item left at %#08lx, right %#08lx", (unsigned long)p_left, (unsigned long)p_right);
         printf(": d1 %d d2 %d\n", d1, d2);
         if(p_left != NULL) {
-            p_left->lxr = (p_left->lxr ^ (unsigned long)p_right) ^ (unsigned long)p_this;
+            shift_lxr(p_left, p_right, p_this);
         }
         if(p_right != NULL) {
-            p_right->lxr = (p_right->lxr ^ (unsigned long)p_left) ^ (unsigned long)p_this;
+            shift_lxr(p_right, p_left, p_this);
         }
         p_this->lxr = (unsigned long)p_current ^ (unsigned long)p_lxri->right;
         p_this->data1 = d1;
