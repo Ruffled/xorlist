@@ -3,7 +3,7 @@ A demo implementation of a single element doubly linked list using XOR
 
 Someone asked if it was possible to do a doubly linked list using only one 'address' element.
 There were no restrictions on any side data that were stored in the implementation, all that
-mattered is that the side data could not grow and rate N (it had to be less) and the complexity
+mattered is that the side data could not grow at rate N (it had to be less) and the complexity
 of the algorithm could also not grow at rate N (it had to be less).
 
 So basically, behave within the bounds of a doubly linked list, except that you can only use one
